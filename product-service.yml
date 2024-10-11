@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: Product Service
+  datasource:
+    url: jdbc:h2:mem:t2Examen
+    username: sa
+    password: 12345
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+resilience4j:
+  circuitBreaker:
+    instances:
+      productServiceCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        failureRateThresHold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 2
+        miniumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+      
+  retry:
+    instances:
+      productServiceRetry:
+        maxAttempts: 3
+        waitDuration: 1s
+  timeLimiter:
+    instances:
+      productServiceTimeLimiter:
+        timeoutDuration: 3s 
+
+server:
+  port: 8082
+        
